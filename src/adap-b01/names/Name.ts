@@ -19,8 +19,12 @@ export class Name {
     private components: string[] = [];
 
     /** Expects that all Name components are properly masked */
+    //@methodtype constructor-method
     constructor(other: string[], delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        this.components = other;
+        if (delimiter != null) {
+            this.delimiter = delimiter;
+        }
     }
 
     /**
@@ -28,8 +32,16 @@ export class Name {
      * Special characters are not escaped (creating a human-readable string)
      * Users can vary the delimiter character to be used
      */
+    //@methodtype conversion-method
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        let s: string = ""
+        for (let i: number = 0; i < this.getNoComponents(); i++) {
+            s += this.unmask(this.getComponent(i));
+            if (i < this.getNoComponents() - 1) {
+                s += this.delimiter;
+            }
+        }
+        return s;
     }
 
     /** 
@@ -37,37 +49,94 @@ export class Name {
      * Machine-readable means that from a data string, a Name can be parsed back in
      * The special characters in the data string are the default characters
      */
+    //@methodtype conversion-method
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        let s: string = "";
+        for (let i: number = 0; i < this.getNoComponents(); i++) {
+            s += this.getComponent(i);
+            if (i < this.getNoComponents() - 1) {
+                s += DEFAULT_DELIMITER;
+            }
+        }
+        return s;
     }
 
     /** Returns properly masked component string */
+    //@methodtype get-method
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        return this.components[i];
     }
 
     /** Expects that new Name component c is properly masked */
+    //@methodtype set-method
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        this.components[i] = c;
     }
 
      /** Returns number of components in Name instance */
+     //@methodtype get-method
      public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        return this.components.length;
     }
 
     /** Expects that new Name component c is properly masked */
+    //@methodtype command-method
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        if (i > this.components.length || i < 0) {
+            throw new Error("index out of range");
+        }
+        let n: string[] = [];
+        let index = 0;
+        while (index < i) {
+            n.push(this.getComponent(index))
+            index++;
+        }
+        n.push(c);
+        while (index < this.getNoComponents()) {
+            n.push(this.components[index]);
+            index++;
+        }
+        this.components = n;
     }
 
     /** Expects that new Name component c is properly masked */
+    //@methodtype command-method
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.components.push(c);
     }
 
+    //@methodtype command-method
     public remove(i: number): void {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        let n: string[] = [];
+        for (let index = 0; index < this.getNoComponents(); index++) {
+            if (index == i) {
+                continue;
+            }
+            n.push(this.components[index])
+        }
+        this.components = n;
+    }
+
+    //@methodtype assertion-method
+    private assertValidIndex(i: number): void {
+        if (i > this.getNoComponents() - 1 || i < 0) {
+            throw new Error("invalid Index");
+        }
+    }
+
+    //@methodtype command-method
+    private unmask(str: string): string {
+        let s: string = "";
+        for (let i: number = 0; i < str.length; i++) {
+            if (str.charAt(i) === "\\") {
+                continue;
+            }
+            s += str.charAt(i);
+        }
+        return s;
     }
 
 }
