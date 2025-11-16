@@ -7,51 +7,118 @@ export class StringArrayName implements Name {
     protected components: string[] = [];
 
     constructor(source: string[], delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        this.components = source;
+        if (delimiter != null) {
+            this.delimiter = delimiter;
+        }
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        let s: string = ""
+        for (let i: number = 0; i < this.getNoComponents(); i++) {
+            s += this.unmask(this.getComponent(i));
+            if (i < this.getNoComponents() - 1) {
+                s += this.delimiter;
+            }
+        }
+        return s;
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        let s: string = "";
+                for (let i: number = 0; i < this.getNoComponents(); i++) {
+                    s += this.getComponent(i);
+                    if (i < this.getNoComponents() - 1) {
+                        s += DEFAULT_DELIMITER;
+                    }
+                }
+                return s;
     }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return this.delimiter;
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        if (this.components.length === 0) {
+            return true;
+        }
+        return false;
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        return this.components.length;
     }
 
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        return this.components[i];
     }
 
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        this.components[i] = c;
     }
 
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        if (i > this.components.length || i < 0) {
+            throw new Error("index out of range");
+        }
+        let n: string[] = [];
+        let index = 0;
+        while (index < i) {
+            n.push(this.getComponent(index))
+            index++;
+        }
+        n.push(c);
+        while (index < this.getNoComponents()) {
+            n.push(this.components[index]);
+            index++;
+        }
+        this.components = n;
     }
 
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.components.push(c);
     }
 
     public remove(i: number): void {
-        throw new Error("needs implementation or deletion");
+        this.assertValidIndex(i);
+        let n: string[] = [];
+        for (let index = 0; index < this.getNoComponents(); index++) {
+            if (index == i) {
+                continue;
+            }
+            n.push(this.components[index])
+        }
+        this.components = n;
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        for (let i: number = 0; i < other.getNoComponents(); i++) {
+            this.append(other.getComponent(i));
+        }
+    }
+
+    private assertValidIndex(i: number): void {
+        if (i > this.getNoComponents() - 1 || i < 0) {
+            throw new Error("index out of range");
+        }
+    }
+
+    private unmask(str: string): string {
+        let s: string = "";
+        let removedPrevious: boolean = false;
+        for (let i: number = 0; i < str.length; i++) {
+            if (str.charAt(i) === "\\" && !removedPrevious) {
+                removedPrevious = true;
+                continue;
+            } else if (removedPrevious) {
+                removedPrevious = false;
+            }
+            s += str.charAt(i);
+        }
+        return s;
     }
 
 }
