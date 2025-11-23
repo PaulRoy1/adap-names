@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
 
-import { Name } from "../../../src/adap-b02/names/Name";
-import { StringName } from "../../../src/adap-b02/names/StringName";
-import { StringArrayName } from "../../../src/adap-b02/names/StringArrayName";
+import { Name } from "../../../src/adap-b03/names/Name";
+import { AbstractName } from "../../../src/adap-b03/names/AbstractName";
+import { StringName } from "../../../src/adap-b03/names/StringName";
+import { StringArrayName } from "../../../src/adap-b03/names/StringArrayName";
 
 describe("Basic function tests", () => {
   it("Constructor text", () => {
-    let n: Name = new StringName("");
+    let n: StringName = new StringName("");
     expect(n.isEmpty()).toBe(false);
     expect(n.getNoComponents()).toBe(1);
     n.append("abc");
@@ -60,8 +61,9 @@ describe("Basic function tests", () => {
 
 describe("Basic function tests", () => {
   it("tests getComponent StringName 1", () => {
-    let n: Name = new StringName("oss.cs.fau.de");
-    expect(n.getComponent(2)).toBe("fau");
+    let n: StringName = new StringName("oss.cs.fau.de");
+    expect(n.getComponent(1)).toBe("cs");
+    expect(n.getComponent(3)).toBe("de");
   });
   it("tests getComponent StringName 2", () => {
     let n: Name = new StringName("oss.cs.fau.de");
@@ -331,6 +333,46 @@ describe("Basic StringArrayName function tests", () => {
     let n: Name = new StringArrayName(["oss", "cs", "fau", "de"]);
     n.remove(0);
     expect(n.asString()).toBe("cs.fau.de");
+  });
+});
+
+describe("Basic function test", () => {
+  it("isEqual and getHashCode test 1", () => {
+    let n1: Name = new StringName("oss.cs.fau.de", ".");
+    let n2: Name = new StringArrayName(["oss", "cs", "fau", "de"], ".");
+    expect(n1.isEqual(n2)).toBe(true);
+    expect(n1.getHashCode() === n2.getHashCode()).toBe(true);
+  });
+  it("isEqual and HashCode test 2", () => {
+    let n1: Name = new StringName("oss.cs.fau.de", ".");
+    let n2: Name = new StringName("oss.cs.fau.de", "-");
+    expect(n1.isEqual(n2)).toBe(false);
+    expect(n1.getHashCode() === n2.getHashCode()).toBe(true);
+  });
+  it("isEqual and HashCode test 3", () => {
+    let n1: Name = new StringName("oss.cs.fau.de", "-");
+    let n2: Name = new StringArrayName(["oss", "cs", "fau", "de"], ".");
+    expect(n1.isEqual(n2)).toBe(false);
+    expect(n1.getHashCode() === n2.getHashCode()).toBe(true);
+  });
+  it("isEqual and HashCode test 4", () => {
+    let n1: Name = new StringName("oss-cs-fau-de", "-");
+    let n2: Name = new StringArrayName(["oss", "cs", "fau", "de"], ".");
+    expect(n1.isEqual(n2)).toBe(false);
+    expect(n1.getHashCode() === n2.getHashCode()).toBe(false);
+  });
+});
+
+describe("Basic function test", () => {
+  it("clone test String", () => {
+    let n1: Name = new StringName("oss.cs.fau.de", ".");
+    let n2 = n1.clone();
+    expect(n1.isEqual(n2)).toBe(true);
+  });
+  it("clone test Array", () => {
+    let n1: Name = new StringArrayName(["oss", "cs", "fau", "de"], ".");
+    let n2 = n1.clone();
+    expect(n1.isEqual(n2)).toBe(true);
   });
 });
 
