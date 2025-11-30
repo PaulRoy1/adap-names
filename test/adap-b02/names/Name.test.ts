@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
 
-import { Name } from "../../../src/adap-b03/names/Name";
-import { AbstractName } from "../../../src/adap-b03/names/AbstractName";
-import { StringName } from "../../../src/adap-b03/names/StringName";
-import { StringArrayName } from "../../../src/adap-b03/names/StringArrayName";
+import { Name } from "../../../src/adap-b04/names/Name";
+import { AbstractName } from "../../../src/adap-b04/names/AbstractName";
+import { StringName } from "../../../src/adap-b04/names/StringName";
+import { StringArrayName } from "../../../src/adap-b04/names/StringArrayName";
 
 describe("Basic function tests", () => {
-  it("Constructor text", () => {
+  it("Constructor test", () => {
     let n: StringName = new StringName("");
     expect(n.isEmpty()).toBe(false);
     expect(n.getNoComponents()).toBe(1);
