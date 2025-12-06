@@ -36,4 +36,10 @@ export class Link extends Node {
         const result: Node = this.targetNode as Node;
         return result;
     }
+
+    public doFindNodes(bn: string, foundNodes: Set<Node>): void {
+        if (this.targetNode != null) {
+            this.targetNode.doFindNodes(bn, foundNodes);
+        }
+    }
 }
