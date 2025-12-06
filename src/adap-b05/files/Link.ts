@@ -27,6 +27,7 @@ export class Link extends Node {
     }
 
     public rename(bn: string): void {
+        this.getParentNode().assertNoDuplicateNamesOfSameType(bn, this);
         const target = this.ensureTargetNode(this.targetNode);
         target.rename(bn);
     }

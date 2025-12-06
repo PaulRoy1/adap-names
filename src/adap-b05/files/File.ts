@@ -1,6 +1,7 @@
 import { Node } from "./Node";
 import { Directory } from "./Directory";
 import { MethodFailedException } from "../common/MethodFailedException";
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
 
 enum FileState {
     OPEN,
@@ -17,10 +18,12 @@ export class File extends Node {
     }
 
     public open(): void {
+        this.assertViableOperation(FileState.OPEN);
         // do something
     }
 
     public read(noBytes: number): Int8Array {
+        this.assertFileOpen();
         let result: Int8Array = new Int8Array(noBytes);
         // do something
 
@@ -40,15 +43,26 @@ export class File extends Node {
     }
 
     protected readNextByte(): number {
+        this.assertFileOpen();
         return 0; // @todo
     }
 
     public close(): void {
+        this.assertViableOperation(FileState.CLOSED)
         // do something
     }
 
     protected doGetFileState(): FileState {
         return this.state;
     }
+
+    private assertViableOperation(state: FileState): void {
+            IllegalArgumentException.assert(state !== this.doGetFileState(), "illegal operation");
+            IllegalArgumentException.assert(this.doGetFileState() !== FileState.DELETED, "operation not possible on deleted file");
+        }
+    
+        private assertFileOpen(): void {
+            IllegalArgumentException.assert(this.doGetFileState() === FileState.OPEN, "file needs to be open to be read");
+        }
 
 }
